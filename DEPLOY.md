@@ -56,13 +56,18 @@ git push -u origin main
 
 ## 五、把数据库绑定给网站（关键一步）
 
+> ⚠️ 仓库里**不要**提交 `wrangler.jsonc`（本地专用配置，已在 .gitignore 里）。云端数据库只认 Pages 项目控制台里的 D1 绑定，变量名必须是 `DB`。
+
 1. 进入刚才创建的 Pages 项目 → 右上角 **设置** → **函数** → **D1 数据库绑定**
 2. 点 **添加绑定**：
    - 变量名称填：`DB`（必须大写，代码里用的是这个名字）
    - 数据库：选 `kid-time-bank-db`
 3. 保存后，回到 **部署** 标签页，点你那条部署右侧的 **…** → **重试部署**，让新绑定生效
-4. 再访问 `https://你的项目名.pages.dev`：
-   - 打开「我是家长」→「创建家庭」，注册成功就说明数据库连接正常 ✅
+4. **验证数据库通了没有**：浏览器打开 `https://你的项目名.pages.dev/api/health`
+   - 看到 `"ok": true` → 数据库连接正常，去注册就行 ✅
+   - 看到 `"ok": false` → 按提示检查绑定（多半是变量名不是 `DB`，或绑定后没重新部署）
+5. 再访问 `https://你的项目名.pages.dev`：
+   - 打开「我是家长」→「创建家庭」，注册成功就说明全部搞定 ✅
 
 ---
 
@@ -76,7 +81,8 @@ git push -u origin main
 
 | 现象 | 处理 |
 |---|---|
-| 注册时报错 | 检查第 5 步 D1 绑定是否完成、变量名是否叫 `DB` |
+| 注册时报错「数据库没连接上…」 | 说明 D1 绑定没生效：检查 Pages → 设置 → 函数 → D1 绑定是否存在、变量名是否叫 `DB`，然后点「重试部署」 |
+| 注册时报错其他内容 | 打开 `/api/health` 看具体提示；仍不行就查看 Pages 项目里的「日志」把报错发给我 |
 | 页面打不开 | 等部署完成；或点「重试部署」 |
 | 想要自己的域名 | Pages → 项目 → **自定义域**，按提示在域名商处加一条 CNAME 解析即可（Cloudflare 免费 DNS） |
 
@@ -95,6 +101,8 @@ git push -u origin main
 ```sh
 npm install
 npm run build        # 先构建前端
+# 首次需要生成本地配置（wrangler.jsonc 已被 gitignore，不会传到云端）：
+cp wrangler.local.example.jsonc wrangler.jsonc
 npx wrangler pages dev   # 启动本地环境（含本地数据库模拟），默认 http://localhost:8788
 ```
 

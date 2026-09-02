@@ -1,0 +1,16 @@
+// 本地开发用配置示例。
+// 用法：复制本文件为 wrangler.jsonc 再运行 `npx wrangler pages dev`。
+// 注意：wrangler.jsonc 已在 .gitignore 中，不会被推送到 GitHub / Cloudflare Pages，
+// 云端使用的是 Pages 项目控制台里配置的 D1 绑定（变量名 DB），不要把它传到仓库。
+{
+  "name": "kid-time-bank",
+  "compatibility_date": "2025-09-01",
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kid-time-bank-db",
+      "database_id": "local"
+    }
+  ]
+}

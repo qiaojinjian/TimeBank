@@ -1,6 +1,6 @@
 import {
   ensureSchema, uid, genCode, hashSecret, createSession, setSessionCookie,
-  json, fail, HttpError, bodyOf,
+  json, fail, HttpError, bodyOf, apiError,
 } from "./_lib";
 
 export const onRequestPost = async (context: any) => {
@@ -42,6 +42,6 @@ export const onRequestPost = async (context: any) => {
     const res = json({ ok: true, familyCode: code });
     return setSessionCookie(res, token);
   } catch (e: any) {
-    return fail("注册失败，请稍后再试", 500);
+    return apiError(e);
   }
 };

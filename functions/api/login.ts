@@ -1,5 +1,5 @@
 import {
-  ensureSchema, createSession, setSessionCookie, json, fail, verifySecret, bodyOf,
+  ensureSchema, createSession, setSessionCookie, json, fail, verifySecret, bodyOf, apiError,
 } from "./_lib";
 
 export const onRequestPost = async (context: any) => {
@@ -19,6 +19,6 @@ export const onRequestPost = async (context: any) => {
     const res = json({ ok: true });
     return setSessionCookie(res, token);
   } catch (e: any) {
-    return fail("登录失败，请稍后再试", 500);
+    return apiError(e);
   }
 };

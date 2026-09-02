@@ -176,6 +176,12 @@ export function genCode(): string {
 }
 
 export async function ensureSchema(env: any): Promise<void> {
+  if (!env?.DB) {
+    throw new HttpError(
+      500,
+      "数据库没连接上：请到 Cloudflare Pages 项目的「设置 → 函数 → D1 数据库绑定」添加绑定，变量名必须填 DB，然后重新部署"
+    );
+  }
   try {
     const row = await env.DB.prepare(`SELECT v FROM meta WHERE k='schema'`).first();
     if (row) return;
