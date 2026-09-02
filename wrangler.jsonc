@@ -1,12 +1,5 @@
 {
   "name": "kid-time-bank",
   "compatibility_date": "2025-09-01",
-  "pages_build_output_dir": "./dist",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "kid-time-bank-db",
-      "database_id": "local"
-    }
-  ]
+  "pages_build_output_dir": "./dist"
 }
