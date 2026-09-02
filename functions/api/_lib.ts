@@ -188,12 +188,13 @@ export async function ensureSchema(env: any): Promise<void> {
   } catch {
     /* meta 表还不存在，走初始化 */
   }
+  // 首次部署时可能多个请求/多个 Worker 实例同时初始化，全部用幂等语句 + OR IGNORE，避免并发冲突
   for (const stmt of SCHEMA.split(";")) {
     const s = stmt.trim();
     if (!s) continue;
     await env.DB.prepare(s).run();
   }
-  await env.DB.prepare(`INSERT INTO meta(k,v) VALUES('schema','1')`).run();
+  await env.DB.prepare(`INSERT OR IGNORE INTO meta(k,v) VALUES('schema','1')`).run();
 }
 
 // ---------------- 认证 ----------------
