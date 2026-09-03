@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { get, post, put, del } from "../../lib/api";
 import { Sheet, useToast, Empty } from "../../lib/ui";
+import { useAuth } from "../../lib/auth";
 import { AVATARS } from "../../lib/format";
 
 interface FamilyInfo {
@@ -14,6 +15,13 @@ interface FamilyInfo {
 
 export default function SettingsPage() {
   const toast = useToast();
+  const { logout } = useAuth();
+
+  const doLogout = async () => {
+    if (!window.confirm("确定要退出登录吗？")) return;
+    await logout();
+    toast("已退出登录");
+  };
   const [family, setFamily] = useState<FamilyInfo | null>(null);
   const [kids, setKids] = useState<any[]>([]);
   const [busy, setBusy] = useState(false);
@@ -27,14 +35,45 @@ export default function SettingsPage() {
   const [renameKid, setRenameKid] = useState<any>(null);
   const [renameValue, setRenameValue] = useState("");
 
+  const [feat, setFeat] = useState<any>(null);
+  const [friendKids, setFriendKids] = useState<any[]>([]);
+
   const load = async () => {
     try {
-      const [s, k] = await Promise.all([
+      const [s, k, f, fr] = await Promise.all([
         get<{ family: FamilyInfo }>("/api/parent/settings"),
         get("/api/parent/kids"),
+        get<{ features: any }>("/api/parent/features"),
+        get<{ kids: any[] }>("/api/parent/friends"),
       ]);
       setFamily(s.family);
       setKids(k.kids || []);
+      setFeat(f.features);
+      setFriendKids(fr.kids || []);
+    } catch (e: any) {
+      toast(e.message);
+    }
+  };
+
+  const saveFeatures = async () => {
+    if (!feat) return;
+    setBusy(true);
+    try {
+      await post("/api/parent/features", feat);
+      toast("好友设置已保存");
+    } catch (e: any) {
+      toast(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removeFriend = async (kidId: string, friendId: string, name: string) => {
+    if (!window.confirm(`确定删除好友 ${name} 吗？`)) return;
+    try {
+      await del(`/api/parent/friends/${kidId}/${friendId}`);
+      toast("已删除");
+      await load();
     } catch (e: any) {
       toast(e.message);
     }
@@ -195,6 +234,75 @@ export default function SettingsPage() {
         )}
       </div>
 
+      {/* 好友功能 */}
+      {feat && (
+        <div className="card space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-extrabold text-slate-700">👫 好友功能</div>
+              <div className="text-xs text-slate-400">
+                开着孩子才能用宝贝号加好友、互赠时币和留言
+              </div>
+            </div>
+            <button
+              onClick={() => setFeat({ ...feat, allowFriends: feat.allowFriends ? 0 : 1 })}
+              className={`btn ${feat.allowFriends ? "btn-green" : "btn-soft"} px-4 py-1.5 text-sm`}
+            >
+              {feat.allowFriends ? "已开启" : "已关闭"}
+            </button>
+          </div>
+          <div>
+            <label className="field-label">单次最多可赠送多少时币</label>
+            <input
+              className="input text-xl font-black"
+              type="number"
+              inputMode="numeric"
+              value={feat.giftMax}
+              onChange={(e) => setFeat({ ...feat, giftMax: parseInt(e.target.value, 10) || 1 })}
+            />
+            <p className="text-[0.7rem] text-slate-400 mt-1">赠送都要你在「审批」里确认才会到账</p>
+          </div>
+          <button onClick={saveFeatures} disabled={busy} className="btn btn-primary w-full py-2.5">
+            保存好友设置
+          </button>
+        </div>
+      )}
+
+      {/* 孩子的好友 */}
+      {friendKids.some((k) => k.friends.length > 0) && (
+        <div className="card">
+          <div className="font-extrabold text-slate-700 mb-3">🧑‍🤝‍🧑 孩子们的好友</div>
+          <div className="space-y-3">
+            {friendKids.map((k) =>
+              k.friends.length === 0 ? null : (
+                <div key={k.id}>
+                  <div className="text-sm font-bold text-slate-600 mb-1.5">
+                    {k.avatar} {k.name}
+                  </div>
+                  <div className="space-y-1.5">
+                    {k.friends.map((f: any) => (
+                      <div key={f.id} className="flex items-center gap-2 border border-slate-100 rounded-xl px-2.5 py-1.5">
+                        <span className="text-xl">{f.avatar}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-bold truncate">{f.name}</div>
+                          <div className="text-[0.65rem] text-slate-400">{f.handle}</div>
+                        </div>
+                        <button
+                          onClick={() => removeFriend(k.id, f.id, f.name)}
+                          className="btn btn-danger text-xs px-2.5 py-1"
+                        >
+                          删除
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 添加孩子 */}
       <Sheet open={kidOpen} onClose={() => setKidOpen(false)} title="🧒 添加小朋友">
         <div className="mb-3">
@@ -242,6 +350,10 @@ export default function SettingsPage() {
           确认改名
         </button>
       </Sheet>
+
+      <button onClick={doLogout} className="btn btn-danger w-full py-3 mt-2">
+        退出登录
+      </button>
     </div>
   );
 }

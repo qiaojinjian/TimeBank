@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { get } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
 import { useHome } from "./ChildApp";
@@ -39,6 +40,16 @@ export default function MePage() {
           </div>
         </div>
       </div>
+
+      {/* 好友入口 */}
+      <Link to="/child/friends" className="card flex items-center gap-3 mb-4 hover:border-sky-300 transition">
+        <span className="text-3xl">👫</span>
+        <div className="flex-1">
+          <div className="font-extrabold text-slate-800">我的好友</div>
+          <div className="text-xs text-slate-400">用宝贝号互相加好友、送时币、留言</div>
+        </div>
+        <span className="text-slate-300">›</span>
+      </Link>
 
       {/* 账本 */}
       <h3 className="font-extrabold text-slate-600 mb-2">📒 我的账本</h3>

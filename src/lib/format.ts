@@ -8,6 +8,12 @@ export const LEDGER_META: Record<string, { label: string; icon: string }> = {
   redeem: { label: "兑换奖励", icon: "🎁" },
   cashout: { label: "兑换零花钱", icon: "💵" },
   refund: { label: "退回时币", icon: "↩️" },
+  parent_adjust: { label: "家长加币", icon: "🖐️" },
+  parent_deduct: { label: "家长扣币", icon: "🧾" },
+  lottery_win: { label: "抽中时币", icon: "🎉" },
+  lottery_buy: { label: "买抽奖机会", icon: "🎟️" },
+  gift_sent: { label: "送给好友", icon: "🎈" },
+  gift_received: { label: "好友赠送", icon: "💝" },
 };
 
 export function fmtLedger(kind: string) {

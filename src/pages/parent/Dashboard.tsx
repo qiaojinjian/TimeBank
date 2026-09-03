@@ -1,23 +1,61 @@
 import { useEffect, useState } from "react";
-import { get } from "../../lib/api";
+import { get, post } from "../../lib/api";
 import { Link } from "react-router-dom";
-import { Empty } from "../../lib/ui";
+import { Empty, Sheet, useToast } from "../../lib/ui";
 
 interface Overview {
   code: string;
   kids: { id: string; name: string; avatar: string; balance: number }[];
-  pending: { completions: number; redemptions: number; total: number };
+  pending: { completions: number; redemptions: number; gifts: number; total: number };
 }
 
 export default function Dashboard() {
+  const toast = useToast();
   const [ov, setOv] = useState<Overview | null>(null);
   const [report, setReport] = useState<any>(null);
   const [copied, setCopied] = useState(false);
 
+  const [coinKid, setCoinKid] = useState<any>(null);
+  const [coinMode, setCoinMode] = useState<"add" | "sub">("add");
+  const [coinAmount, setCoinAmount] = useState(0);
+  const [coinNote, setCoinNote] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const load = async () => {
+    try {
+      setOv(await get<Overview>("/api/parent/overview"));
+    } catch {
+      /* ignore */
+    }
+  };
+
   useEffect(() => {
-    get<Overview>("/api/parent/overview").then(setOv).catch(() => {});
+    load();
     get<any>("/api/parent/report").then(setReport).catch(() => {});
   }, []);
+
+  const openCoins = (k: any) => {
+    setCoinKid(k);
+    setCoinMode("add");
+    setCoinAmount(0);
+    setCoinNote("");
+  };
+
+  const submitCoins = async () => {
+    if (!coinKid || !coinAmount) return toast("先填一个数量");
+    setBusy(true);
+    try {
+      const signed = coinMode === "add" ? coinAmount : -coinAmount;
+      await post(`/api/parent/kids/${coinKid.id}/coins`, { amount: signed, note: coinNote });
+      toast(`${coinMode === "add" ? "已加上" : "已扣除"} ${coinAmount} 时币`);
+      setCoinKid(null);
+      await Promise.all([load(), get<any>("/api/parent/report").then(setReport)]);
+    } catch (e: any) {
+      toast(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (!ov) return <div className="py-20 text-center text-slate-300 text-3xl">⏳</div>;
 
@@ -51,6 +89,7 @@ export default function Dashboard() {
           {ov.pending.total > 0 ? (
             <span className="text-rose-500 font-black text-lg">
               打卡 {ov.pending.completions} · 兑换 {ov.pending.redemptions}
+              {ov.pending.gifts > 0 && ` · 赠送 ${ov.pending.gifts}`}
             </span>
           ) : (
             <span className="text-emerald-500 font-bold text-sm">全部处理完啦 🎉</span>
@@ -83,7 +122,12 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right shrink-0">
                   <div className="font-black text-amber-600">🪙 {k.balance.toLocaleString()}</div>
-                  <div className="text-[0.65rem] text-slate-300">时币</div>
+                  <button
+                    onClick={() => openCoins(k)}
+                    className="mt-1 text-xs font-bold text-sky-600 bg-sky-50 rounded-full px-2.5 py-1"
+                  >
+                    🪙 加币
+                  </button>
                 </div>
               </div>
             );
@@ -127,6 +171,70 @@ export default function Dashboard() {
       <div className="text-center text-xs text-slate-300 pb-2">
         全家庭共存了 {report?.totalCoins?.toLocaleString() ?? 0} 时币 · 孩子们都很棒！
       </div>
+
+      {/* 手动加币 */}
+      <Sheet open={!!coinKid} onClose={() => setCoinKid(null)} title={`🪙 调整 ${coinKid?.name || ""} 的时币`}>
+        <div className="text-center text-sm text-slate-500 mb-3">
+          当前余额 <b className="text-amber-600">{coinKid?.balance ?? 0}</b> 时币
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <button
+            onClick={() => setCoinMode("add")}
+            className={`btn py-2.5 ${coinMode === "add" ? "btn-primary" : "btn-soft"}`}
+          >
+            ➕ 加币
+          </button>
+          <button
+            onClick={() => setCoinMode("sub")}
+            className={`btn py-2.5 ${coinMode === "sub" ? "btn-danger" : "btn-soft"}`}
+          >
+            ➖ 扣币
+          </button>
+        </div>
+
+        <div className="flex gap-3 items-stretch">
+          <input
+            className="input flex-1 text-3xl font-black text-center"
+            type="number"
+            inputMode="numeric"
+            value={coinAmount || ""}
+            placeholder="0"
+            onChange={(e) => setCoinAmount(Math.min(999, parseInt(e.target.value, 10) || 0))}
+          />
+          <div className="grid grid-rows-3 gap-1.5 w-20 shrink-0">
+            {[1, 5, 10].map((n) => (
+              <button
+                key={n}
+                onClick={() => setCoinAmount((v) => Math.min(999, v + n))}
+                className="btn btn-gold text-sm"
+              >
+                +{n}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-[0.7rem] text-slate-400 mt-2">快捷按钮是累加，点一次 +5 再加一次 +10 就是 15</p>
+
+        <div className="mt-4">
+          <label className="field-label">备注（会记进他的账本）</label>
+          <input
+            className="input"
+            value={coinNote}
+            maxLength={40}
+            placeholder={"比如：帮忙拿快递奖励"}
+            onChange={(e) => setCoinNote(e.target.value)}
+          />
+        </div>
+
+        <button
+          onClick={submitCoins}
+          disabled={busy || !coinAmount}
+          className="btn btn-primary w-full py-3.5 text-lg mt-4"
+        >
+          {coinMode === "add" ? `加上 ${coinAmount} 时币` : `扣除 ${coinAmount} 时币`}
+        </button>
+      </Sheet>
     </div>
   );
 }

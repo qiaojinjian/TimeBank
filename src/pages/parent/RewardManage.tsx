@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { get, post } from "../../lib/api";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { REWARD_ICONS } from "../../lib/format";
+import LotteryManage from "./LotteryManage";
+
+type Tab = "rewards" | "lottery";
 
 export default function RewardManage() {
   const toast = useToast();
+  const [tab, setTab] = useState<Tab>("rewards");
   const [rewards, setRewards] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -49,6 +53,25 @@ export default function RewardManage() {
 
   return (
     <div>
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        <button
+          onClick={() => setTab("rewards")}
+          className={`btn py-2.5 ${tab === "rewards" ? "btn-gold" : "btn-soft"}`}
+        >
+          🎁 奖励商店
+        </button>
+        <button
+          onClick={() => setTab("lottery")}
+          className={`btn py-2.5 ${tab === "lottery" ? "btn-gold" : "btn-soft"}`}
+        >
+          🎰 抽奖转盘
+        </button>
+      </div>
+
+      {tab === "lottery" ? (
+        <LotteryManage />
+      ) : (
+      <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-black text-slate-800">🎁 奖励商店管理</h2>
         <button className="btn btn-gold text-sm px-4 py-2" onClick={() => { setForm({ title: "", icon: "🎁", price: 20 }); setOpen(true); }}>
@@ -111,6 +134,8 @@ export default function RewardManage() {
           {form.id ? "保存修改" : "上架"}
         </button>
       </Sheet>
+      </div>
+      )}
     </div>
   );
 }

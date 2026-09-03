@@ -9,6 +9,7 @@ export const onRequestGet = async (context: any) => {
     return json({
       user: {
         id: user.id, name: user.name, avatar: user.avatar, role: user.role, balance: user.balance,
+        handle: user.handle || null,
       },
       family: {
         id: family.id,

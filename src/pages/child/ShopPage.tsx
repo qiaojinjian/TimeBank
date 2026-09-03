@@ -2,6 +2,7 @@ import { useState } from "react";
 import { get, post } from "../../lib/api";
 import { useHome } from "./ChildApp";
 import { Sheet, useToast, Empty } from "../../lib/ui";
+import LotteryPanel from "./LotteryPanel";
 
 export default function ShopPage() {
   const { data, reload } = useHome();
@@ -59,6 +60,8 @@ export default function ShopPage() {
     <div>
       <h2 className="text-xl font-black text-slate-800 mb-1">🛍️ 奖励商店</h2>
       <p className="text-sm text-slate-400 mb-4">花时币换奖励，都是家长可以兑现的哦</p>
+
+      <LotteryPanel />
 
       {data.pendingRedemptions > 0 && (
         <div className="bg-amber-50 border border-amber-200 text-amber-700 rounded-xl px-3 py-2.5 text-sm font-bold mb-4">

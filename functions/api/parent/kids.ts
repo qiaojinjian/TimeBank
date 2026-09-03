@@ -1,5 +1,5 @@
 import {
-  requireAuth, apiError, json, fail, uid, hashSecret, settleDeposits,
+  requireAuth, apiError, json, fail, uid, hashSecret, settleDeposits, uniqueHandle,
 } from "../_lib";
 
 export const onRequestGet = async (context: any) => {
@@ -34,10 +34,11 @@ export const onRequestPost = async (context: any) => {
 
     const id = uid();
     const hash = await hashSecret(pin);
+    const handle = await uniqueHandle(env);
     await env.DB.prepare(
-      `INSERT INTO users(id, family_id, role, name, avatar, secret_hash) VALUES(?,?,?,?,?,?)`
-    ).bind(id, family.id, "child", name, avatar, hash).run();
-    return json({ ok: true, id });
+      `INSERT INTO users(id, family_id, role, name, avatar, secret_hash, handle) VALUES(?,?,?,?,?,?,?)`
+    ).bind(id, family.id, "child", name, avatar, hash, handle).run();
+    return json({ ok: true, id, handle });
   } catch (e: any) {
     return apiError(e);
   }

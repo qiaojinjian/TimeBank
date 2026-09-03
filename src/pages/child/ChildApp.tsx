@@ -8,6 +8,7 @@ import TasksPage from "./TasksPage";
 import BankPage from "./BankPage";
 import ShopPage from "./ShopPage";
 import MePage from "./MePage";
+import FriendsPage from "./FriendsPage";
 
 // 首页数据共享
 interface HomeData {
@@ -80,6 +81,7 @@ export default function ChildApp() {
           <Route path="/child/bank" element={<BankPage />} />
           <Route path="/child/shop" element={<ShopPage />} />
           <Route path="/child/me" element={<MePage />} />
+          <Route path="/child/friends" element={<FriendsPage />} />
           <Route path="*" element={<Navigate to="/child/home" replace />} />
         </Routes>
       </div>

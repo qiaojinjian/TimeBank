@@ -7,6 +7,7 @@ export interface User {
   avatar: string;
   role: "parent" | "child";
   balance: number;
+  handle?: string | null;
 }
 
 export interface Family {

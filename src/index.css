@@ -166,6 +166,16 @@ button {
   animation: coin-drop 0.45s ease;
 }
 
+/* 抽奖转盘 */
+@keyframes spin-fast {
+  from { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(360deg) scale(1.15); }
+  to { transform: rotate(720deg) scale(1); }
+}
+.spin-fast {
+  animation: spin-fast 0.9s ease-in-out;
+}
+
 /* toast */
 .toast {
   position: fixed;

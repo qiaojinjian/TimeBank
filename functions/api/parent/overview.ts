@@ -24,6 +24,10 @@ export const onRequestGet = async (context: any) => {
     const reds: any = await env.DB.prepare(
       `SELECT COUNT(*) AS n FROM redemptions WHERE status='pending' AND family_id=?`
     ).bind(family.id).first();
+    const giftRows: any = await env.DB.prepare(
+      `SELECT COUNT(*) AS n FROM gifts WHERE status='pending'
+       AND to_user IN (SELECT id FROM users WHERE family_id=? AND role='child')`
+    ).bind(family.id).first();
 
     return json({
       code: family.code,
@@ -31,7 +35,8 @@ export const onRequestGet = async (context: any) => {
       pending: {
         completions: comps.n,
         redemptions: reds.n,
-        total: comps.n + reds.n,
+        gifts: giftRows.n,
+        total: comps.n + reds.n + giftRows.n,
       },
     });
   } catch (e: any) {
