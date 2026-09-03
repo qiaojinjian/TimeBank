@@ -21,29 +21,17 @@ interface Lottery {
   draws: any[];
 }
 
-const WHEEL_COLORS = [
-  "#f97316", "#f59e0b", "#10b981", "#06b6d4",
-  "#6366f1", "#a855f7", "#ec4899", "#ef4444",
-  "#84cc16", "#0ea5e9",
-];
 const SETTLE_MS = 2400;
 const WHEEL_SIZE = 248;
 
-// 按权重把圆盘切成扇区，角度以 12 点方向为 0°，顺时针
 function sectorsOf(prizes: Prize[]) {
   const total = prizes.reduce((s, p) => s + p.weight, 0) || 1;
   let acc = 0;
-  return prizes.map((p, i) => {
+  return prizes.map((p) => {
     const start = (acc / total) * 360;
     acc += p.weight;
     const end = (acc / total) * 360;
-    return {
-      prize: p,
-      start,
-      end,
-      center: (start + end) / 2,
-      color: WHEEL_COLORS[i % WHEEL_COLORS.length],
-    };
+    return { prize: p, start, end, center: (start + end) / 2 };
   });
 }
 
@@ -71,7 +59,6 @@ function PrizeWheel({
   useEffect(() => {
     if (!spinning) return;
 
-    // 还不知道中什么：先快速空转
     if (!landOn) {
       let raf = 0;
       let last = 0;
@@ -87,14 +74,13 @@ function PrizeWheel({
       return () => cancelAnimationFrame(raf);
     }
 
-    // 已知奖项：多转几圈后停在对应扇区
     const target = sectors.find((s) => s.prize.id === landOn);
     if (!target) {
       settledRef.current();
       return;
     }
     const half = Math.max(2, (target.end - target.start) / 2 - 4);
-    const jitter = (Math.random() * 2 - 1) * half; // 别每次都停在正中间
+    const jitter = (Math.random() * 2 - 1) * half;
     const want = 360 - (target.center + jitter);
     const cur = ((rotRef.current % 360) + 360) % 360;
     const delta = ((want - cur) % 360 + 360) % 360;
@@ -105,38 +91,21 @@ function PrizeWheel({
     return () => clearTimeout(timer);
   }, [spinning, landOn, sectors]);
 
-  const gradient =
-    sectors.length === 0
-      ? "#e2e8f0"
-      : `conic-gradient(${sectors.map((s) => `${s.color} ${s.start}deg ${s.end}deg`).join(", ")})`;
-
   return (
     <div className="relative mx-auto select-none" style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}>
       <div
         className={`absolute -inset-1.5 rounded-full bg-gradient-to-br from-amber-300 to-violet-400 blur-[2px] ${won ? "glow-ring" : ""}`}
       />
-      <div
-        className="absolute inset-0 rounded-full border-4 border-white shadow-lg overflow-hidden"
+      <img
+        src="/wheel.png"
+        alt=""
+        draggable={false}
+        className="absolute inset-0 w-full h-full object-cover"
         style={{
-          background: gradient,
           transform: `rotate(${rot}deg)`,
           transition: spinning && landOn ? `transform ${SETTLE_MS}ms cubic-bezier(0.12, 0.62, 0.03, 1)` : "none",
         }}
-      >
-        {sectors.map((s) => (
-          <div key={s.prize.id} className="absolute inset-0" style={{ transform: `rotate(${s.center}deg)` }}>
-            <div className="pt-3 flex justify-center text-white" style={{ textShadow: "0 1px 2px rgb(0 0 0 / 0.35)" }}>
-              <div className="w-[68px] text-center">
-                <div className="text-lg leading-none">{s.prize.icon}</div>
-                <div className="text-[10px] font-bold leading-tight truncate">
-                  {s.prize.title.length > 5 ? `${s.prize.title.slice(0, 5)}…` : s.prize.title}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
+      />
       {/* 指针 */}
       <div
         className="absolute left-1/2 -top-1 -translate-x-1/2 w-0 h-0 z-10"
@@ -179,7 +148,6 @@ export default function LotteryPanel() {
   if (!data || !data.enabled) return null;
   const quota = data.quota;
   const pendingCount = data.draws.filter((d: any) => d.status === "pending").length;
-  // 待决定的排在最前面，避免被后来的记录挤出去
   const orderedDraws = [
     ...data.draws.filter((d: any) => d.status === "pending"),
     ...data.draws.filter((d: any) => d.status !== "pending"),
@@ -194,14 +162,13 @@ export default function LotteryPanel() {
       const r = await post<{ prize: any; quota: any }>("/api/lottery/draw");
       pendingRef.current = r;
       setData((d) => (d ? { ...d, quota: r.quota } : d));
-      setLandOn(r.prize.prizeId); // 转盘开始往中奖扇区靠
+      setLandOn(r.prize.prizeId);
     } catch (e: any) {
       setSpinning(false);
       toast(e.message);
     }
   };
 
-  // 转盘停稳后再揭晓
   const onSettled = () => {
     const r = pendingRef.current;
     pendingRef.current = null;
@@ -324,23 +291,6 @@ export default function LotteryPanel() {
           <button onClick={buy} disabled={busy} className="btn btn-gold w-full py-2.5 mb-3 text-sm">
             花 {quota.price} 时币再买 1 次（今天还能买 {quota.canBuy} 次）
           </button>
-        )}
-
-        {/* 概率 */}
-        {data.prizes.length > 0 && (
-          <div className="card !p-3 mb-3">
-            <div className="font-extrabold text-sm text-slate-600 mb-2">🏆 奖项一览</div>
-            {data.prizes.map((p) => (
-              <div key={p.id} className="flex items-center gap-2 text-sm py-1">
-                <span className="text-lg">{p.icon}</span>
-                <span className="flex-1 truncate">{p.title}</span>
-                <span className="text-xs text-slate-400">
-                  {p.kind === "coins" ? `${p.coins} 时币` : p.kind === "gift" ? "礼物" : "空奖"}
-                </span>
-                <span className="font-black text-amber-600 w-12 text-right">{p.pct}%</span>
-              </div>
-            ))}
-          </div>
         )}
 
         {/* 我的奖品 */}

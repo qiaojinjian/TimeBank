@@ -119,6 +119,7 @@ button {
   text-decoration: none;
 }
 .bottom-nav a .icon {
+  position: relative;
   font-size: 1.4rem;
   line-height: 1.2;
 }
