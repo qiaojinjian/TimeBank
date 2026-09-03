@@ -1,6 +1,7 @@
 import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useAuth } from "../../lib/auth";
 import { useToast } from "../../lib/ui";
+import { IfIcon } from "../../lib/Icon";
 import Dashboard from "./Dashboard";
 import Approvals from "./Approvals";
 import TaskManage from "./TaskManage";
@@ -17,18 +18,20 @@ export default function ParentApp() {
     toast("已退出登录");
   };
   const items = [
-    { to: "/parent/home", icon: "🏠", label: "概览" },
-    { to: "/parent/approvals", icon: "✅", label: "审批" },
-    { to: "/parent/tasks", icon: "📋", label: "任务" },
-    { to: "/parent/rewards", icon: "🎁", label: "奖励" },
-    { to: "/parent/settings", icon: "⚙️", label: "设置" },
+    { to: "/parent/home", icon: "analytics", label: "概览" },
+    { to: "/parent/approvals", icon: "check", label: "审批" },
+    { to: "/parent/tasks", icon: "order", label: "任务" },
+    { to: "/parent/rewards", icon: "gift", label: "奖励" },
+    { to: "/parent/settings", icon: "tools", label: "设置" },
   ];
   return (
     <div className="page">
       {/* 顶部栏 */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <span className="text-3xl">🏦</span>
+          <span className="text-3xl">
+            <IfIcon name="bank" />
+          </span>
           <div>
             <div className="font-black text-slate-800 leading-tight">家长控制台</div>
             <div className="text-xs text-slate-400">{user?.name || "家长"}</div>
@@ -56,7 +59,9 @@ export default function ParentApp() {
             to={it.to}
             className={({ isActive }) => (isActive ? "active" : "")}
           >
-            <span className="icon">{it.icon}</span>
+            <span className="icon">
+              <IfIcon name={it.icon} />
+            </span>
             <span>{it.label}</span>
           </NavLink>
         ))}

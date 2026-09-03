@@ -3,6 +3,7 @@ import { get, post, put, del } from "../../lib/api";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { useAuth } from "../../lib/auth";
 import { AVATARS } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 interface FamilyInfo {
   name: string;
@@ -155,7 +156,10 @@ export default function SettingsPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-black text-slate-800 mb-1">⚙️ 设置</h2>
+        <h2 className="text-xl font-black text-slate-800 mb-1 flex items-center gap-1.5">
+          <IfIcon name="tools" />
+          设置
+        </h2>
         <p className="text-xs text-slate-400">利率、兑换比例，以及小朋友的管理都在这里</p>
       </div>
 
@@ -177,7 +181,10 @@ export default function SettingsPage() {
 
       {/* 定期利率 */}
       <div className="card space-y-4">
-        <div className="font-extrabold text-slate-700">🏦 定期利率</div>
+        <div className="font-extrabold text-slate-700 flex items-center gap-1.5">
+          <IfIcon name="bank" />
+          定期利率
+        </div>
         {[
           { key: "interest7", label: "7 天定期（%）", hint: "约一周的零花钱计划" },
           { key: "interest14", label: "14 天定期（%）", hint: "两周耐心挑战" },
@@ -209,7 +216,10 @@ export default function SettingsPage() {
       {/* 孩子管理 */}
       <div className="card">
         <div className="flex items-center justify-between mb-3">
-          <div className="font-extrabold text-slate-700">🧒 管理小朋友</div>
+          <div className="font-extrabold text-slate-700 flex items-center gap-1.5">
+            <IfIcon name="baby" />
+            管理小朋友
+          </div>
           <button className="btn btn-primary text-sm px-4 py-1.5" onClick={() => setKidOpen(true)}>
             + 添加
           </button>
@@ -239,7 +249,10 @@ export default function SettingsPage() {
         <div className="card space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-extrabold text-slate-700">👫 好友功能</div>
+              <div className="font-extrabold text-slate-700 flex items-center gap-1.5">
+                <IfIcon name="couple" />
+                好友功能
+              </div>
               <div className="text-xs text-slate-400">
                 开着孩子才能用宝贝号加好友、互赠时币和留言
               </div>
@@ -271,7 +284,10 @@ export default function SettingsPage() {
       {/* 孩子的好友 */}
       {friendKids.some((k) => k.friends.length > 0) && (
         <div className="card">
-          <div className="font-extrabold text-slate-700 mb-3">🧑‍🤝‍🧑 孩子们的好友</div>
+          <div className="font-extrabold text-slate-700 mb-3 flex items-center gap-1.5">
+            <IfIcon name="couple" />
+            孩子们的好友
+          </div>
           <div className="space-y-3">
             {friendKids.map((k) =>
               k.friends.length === 0 ? null : (

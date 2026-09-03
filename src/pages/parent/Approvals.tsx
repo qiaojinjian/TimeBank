@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, post } from "../../lib/api";
 import { useToast, Empty } from "../../lib/ui";
 import { fmtDate, fmtMoneyFen } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 type Tab = "completions" | "redemptions" | "gifts";
 
@@ -53,7 +54,10 @@ export default function Approvals() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-black text-slate-800">✅ 审批</h2>
+        <h2 className="text-xl font-black text-slate-800 flex items-center gap-1.5">
+          <IfIcon name="check" />
+          审批
+        </h2>
         <button onClick={load} className="btn btn-soft text-sm px-4 py-1.5">刷新</button>
       </div>
 

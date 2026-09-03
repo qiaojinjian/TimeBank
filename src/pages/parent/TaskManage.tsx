@@ -3,6 +3,7 @@ import { get, post } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { TASK_ICONS } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 export default function TaskManage() {
   const toast = useToast();
@@ -59,7 +60,10 @@ export default function TaskManage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-black text-slate-800">📋 任务管理</h2>
+        <h2 className="text-xl font-black text-slate-800 flex items-center gap-1.5">
+          <IfIcon name="order" />
+          任务管理
+        </h2>
         <button className="btn btn-primary text-sm px-4 py-2" onClick={() => { setForm({ title: "", icon: "⭐", kind: "daily", amount: 3, approve: "manual", assignee: "" }); setOpen(true); }}>
           + 发任务
         </button>

@@ -3,11 +3,17 @@ import { useAuth } from "../../lib/auth";
 import { useHome } from "./ChildApp";
 import { fmtDate } from "../../lib/format";
 import { Empty } from "../../lib/ui";
+import { IfIcon } from "../../lib/Icon";
 
 export default function HomePage() {
   const { user, family } = useAuth();
   const { data, reload } = useHome();
-  if (!data) return <div className="py-20 text-center text-slate-400 text-3xl">🏦</div>;
+  if (!data)
+    return (
+      <div className="py-20 text-center text-slate-400 text-3xl">
+        <IfIcon name="bank" />
+      </div>
+    );
 
   const todayCount = data.completionsToday.filter((c) => c.status === "approved").length;
   const goals = data.goals.slice(0, 2);
@@ -44,7 +50,10 @@ export default function HomePage() {
         {/* 今日任务 */}
         <div className="card shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-extrabold text-slate-800">📋 今日任务</h3>
+            <h3 className="font-extrabold text-slate-800 flex items-center gap-1.5">
+              <IfIcon name="order" />
+              今日任务
+            </h3>
             <Link to="/child/tasks" className="text-sky-600 text-sm font-bold">
               全部 →
             </Link>
@@ -87,7 +96,10 @@ export default function HomePage() {
         {goals.length > 0 && (
           <div className="card shadow-sm mt-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-extrabold text-slate-800">🎯 我的存钱罐</h3>
+              <h3 className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                <IfIcon name="moneybox" />
+                我的存钱罐
+              </h3>
               <Link to="/child/bank" className="text-sky-600 text-sm font-bold">
                 去存 →
               </Link>
@@ -115,7 +127,10 @@ export default function HomePage() {
         {/* 今日动态 */}
         {data.completionsToday.length > 0 && (
           <div className="card shadow-sm mt-4">
-            <h3 className="font-extrabold text-slate-800 mb-3">🕘 今日动态</h3>
+            <h3 className="font-extrabold text-slate-800 mb-3 flex items-center gap-1.5">
+              <IfIcon name="time" />
+              今日动态
+            </h3>
             <div className="space-y-2">
               {data.completionsToday.map((c: any) => (
                 <div key={c.id} className="flex items-center gap-2 text-sm">

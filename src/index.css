@@ -242,6 +242,16 @@ button {
   transition: width 0.4s ease;
 }
 
+/* iconfont 图标：大小跟着字号，颜色跟着父元素 color */
+.if-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
 /* 徽章数字 */
 .badge-num {
   position: absolute;

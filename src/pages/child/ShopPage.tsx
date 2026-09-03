@@ -3,6 +3,7 @@ import { get, post } from "../../lib/api";
 import { useHome } from "./ChildApp";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import LotteryPanel from "./LotteryPanel";
+import { IfIcon } from "../../lib/Icon";
 
 export default function ShopPage() {
   const { data, reload } = useHome();
@@ -58,7 +59,10 @@ export default function ShopPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-black text-slate-800 mb-1">🛍️ 奖励商店</h2>
+      <h2 className="text-xl font-black text-slate-800 mb-1 flex items-center gap-1.5">
+        <IfIcon name="shop" />
+        奖励商店
+      </h2>
       <p className="text-sm text-slate-400 mb-4">花时币换奖励，都是家长可以兑现的哦</p>
 
       <LotteryPanel />
@@ -78,7 +82,10 @@ export default function ShopPage() {
         className="w-full mb-4 rounded-2xl p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-200/70 text-left flex items-center justify-between"
       >
         <div>
-          <div className="font-black text-lg">💵 时币换零花钱</div>
+          <div className="font-black text-lg flex items-center gap-1.5">
+            <IfIcon name="banknote" />
+            时币换零花钱
+          </div>
           <div className="text-emerald-100 text-sm mt-0.5">
             {rate} 时币 = 1 元 · 家长给真钱
           </div>
@@ -87,7 +94,10 @@ export default function ShopPage() {
       </button>
 
       {/* 奖励列表 */}
-      <h3 className="font-extrabold text-slate-600 mb-2">🎁 可以用时币兑换的</h3>
+      <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+        <IfIcon name="gift" />
+        可以用时币兑换的
+      </h3>
       {rewards.length === 0 ? (
         <Empty text="商店还没上架东西，让家长来放几个奖励吧" emoji="🛒" />
       ) : (

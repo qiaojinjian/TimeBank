@@ -3,6 +3,7 @@ import { get, post, ApiError } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { AVATARS } from "../lib/format";
 import { useToast } from "../lib/ui";
+import { IfIcon } from "../lib/Icon";
 
 export default function LoginPage() {
   const { refresh } = useAuth();
@@ -102,7 +103,9 @@ export default function LoginPage() {
     <div className="page !pt-0">
       {/* 顶部 */}
       <div className="pt-10 pb-6 text-center bg-gradient-to-b from-sky-200 via-sky-100 to-transparent -mx-0 rounded-b-[2rem]">
-        <div className="text-5xl mb-2">🏦</div>
+        <div className="text-5xl mb-2">
+          <IfIcon name="bank" />
+        </div>
         <h1 className="text-2xl font-black text-sky-900">儿童时间银行</h1>
         <p className="text-sky-700/80 text-sm mt-1">做任务赚时币 · 存钱生利息 · 兑换大奖励</p>
       </div>

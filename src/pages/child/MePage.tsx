@@ -5,6 +5,7 @@ import { useAuth } from "../../lib/auth";
 import { useHome } from "./ChildApp";
 import { useToast, Empty } from "../../lib/ui";
 import { fmtDate, fmtLedger } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 export default function MePage() {
   const { user, family, logout } = useAuth();
@@ -43,7 +44,9 @@ export default function MePage() {
 
       {/* 好友入口 */}
       <Link to="/child/friends" className="card flex items-center gap-3 mb-4 hover:border-sky-300 transition">
-        <span className="text-3xl">👫</span>
+        <span className="text-3xl">
+          <IfIcon name="couple" />
+        </span>
         <div className="flex-1">
           <div className="font-extrabold text-slate-800">我的好友</div>
           <div className="text-xs text-slate-400">用宝贝号互相加好友、送时币、留言</div>
@@ -52,7 +55,10 @@ export default function MePage() {
       </Link>
 
       {/* 账本 */}
-      <h3 className="font-extrabold text-slate-600 mb-2">📒 我的账本</h3>
+      <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+        <IfIcon name="notebook" />
+        我的账本
+      </h3>
       {ledger.length === 0 ? (
         <div className="card">
           <Empty text="还没有记录，去做第一个任务吧！" emoji="📭" />

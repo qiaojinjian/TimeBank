@@ -29,7 +29,7 @@ export function Sheet({
 }: {
   open: boolean;
   onClose: () => void;
-  title?: string;
+  title?: ReactNode;
   children: ReactNode;
 }) {
   if (!open) return null;

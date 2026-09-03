@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, post } from "../../lib/api";
 import { Link } from "react-router-dom";
 import { Empty, Sheet, useToast } from "../../lib/ui";
+import { IfIcon } from "../../lib/Icon";
 
 interface Overview {
   code: string;
@@ -85,7 +86,10 @@ export default function Dashboard() {
       {/* 待办审批入口 */}
       <Link to="/parent/approvals" className="block card mb-4 hover:border-sky-300 transition">
         <div className="flex items-center justify-between">
-          <span className="font-extrabold text-slate-700">✅ 待处理</span>
+          <span className="font-extrabold text-slate-700 flex items-center gap-1.5">
+            <IfIcon name="check" />
+            待处理
+          </span>
           {ov.pending.total > 0 ? (
             <span className="text-rose-500 font-black text-lg">
               打卡 {ov.pending.completions} · 兑换 {ov.pending.redemptions}
@@ -98,7 +102,10 @@ export default function Dashboard() {
       </Link>
 
       {/* 孩子卡片 */}
-      <h3 className="font-extrabold text-slate-600 mb-2">👧 孩子们</h3>
+      <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+        <IfIcon name="baby" />
+        孩子们
+      </h3>
       {ov.kids.length === 0 ? (
         <Link to="/parent/settings" className="card block text-center py-8 text-slate-400 hover:border-sky-300">
           <div className="text-4xl mb-1">🧒</div>
@@ -138,7 +145,10 @@ export default function Dashboard() {
       {/* 本周表现 */}
       {report && report.kids.some((k: any) => k.goals.length > 0 || k.weekCompletions > 0) && (
         <>
-          <h3 className="font-extrabold text-slate-600 mb-2">📈 本周表现</h3>
+          <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+            <IfIcon name="barchart" />
+            本周表现
+          </h3>
           <div className="card mb-4">
             {report.kids.map((k: any) =>
               k.goals.length === 0 && k.weekCompletions === 0 ? null : (

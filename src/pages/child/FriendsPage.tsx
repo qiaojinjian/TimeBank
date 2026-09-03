@@ -3,6 +3,7 @@ import { get, post, put, del } from "../../lib/api";
 import { useHome } from "./ChildApp";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { fmtDate } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 interface Friend {
   id: string;
@@ -240,7 +241,10 @@ export default function FriendsPage() {
       {/* 收到的申请 */}
       {data.incoming.length > 0 && (
         <>
-          <h3 className="font-extrabold text-slate-600 mb-2">📬 好友申请（{data.incoming.length}）</h3>
+          <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+            <IfIcon name="envelope" />
+            好友申请（{data.incoming.length}）
+          </h3>
           <div className="space-y-2 mb-4">
             {data.incoming.map((r: any) => (
               <div key={r.linkId} className="card flex items-center gap-3">
@@ -270,7 +274,10 @@ export default function FriendsPage() {
       )}
 
       {/* 好友列表 */}
-      <h3 className="font-extrabold text-slate-600 mb-2">👫 我的好友（{data.friends.length}）</h3>
+      <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+        <IfIcon name="couple" />
+        我的好友（{data.friends.length}）
+      </h3>
       {data.friends.length === 0 ? (
         <div className="card">
           <Empty text="还没有好友，用宝贝号互相加一下吧" emoji="🧑‍🤝‍🧑" />
@@ -293,7 +300,10 @@ export default function FriendsPage() {
       {/* 赠送记录 */}
       {data.gifts.length > 0 && (
         <>
-          <h3 className="font-extrabold text-slate-600 mb-2">💝 赠送记录</h3>
+          <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+            <IfIcon name="gift" />
+            赠送记录
+          </h3>
           <div className="card !p-2">
             {data.gifts.slice(0, 10).map((g: any) => (
               <div key={g.id} className="flex items-center gap-2 px-2 py-2 border-b border-slate-50 last:border-0">

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState, ReactNode 
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { get } from "../../lib/api";
 import { useAuth } from "../../lib/auth";
+import { IfIcon } from "../../lib/Icon";
 
 import HomePage from "./HomePage";
 import TasksPage from "./TasksPage";
@@ -29,11 +30,11 @@ export const useHome = () => useContext(HomeCtx);
 
 function Nav({ pending }: { pending: number }) {
   const items = [
-    { to: "/child/home", icon: "🏠", label: "大厅" },
-    { to: "/child/tasks", icon: "📋", label: "任务" },
-    { to: "/child/bank", icon: "🏦", label: "银行" },
-    { to: "/child/shop", icon: "🛍️", label: "商店" },
-    { to: "/child/me", icon: "🏅", label: "我的" },
+    { to: "/child/home", icon: "house", label: "大厅" },
+    { to: "/child/tasks", icon: "order", label: "任务" },
+    { to: "/child/bank", icon: "bank", label: "银行" },
+    { to: "/child/shop", icon: "shop", label: "商店" },
+    { to: "/child/me", icon: "badge", label: "我的" },
   ];
   return (
     <nav className="bottom-nav">
@@ -44,7 +45,7 @@ function Nav({ pending }: { pending: number }) {
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <span className="icon">
-            {it.icon}
+            <IfIcon name={it.icon} />
             {it.to === "/child/shop" && pending > 0 && <span className="badge-num">{pending}</span>}
           </span>
           <span>{it.label}</span>

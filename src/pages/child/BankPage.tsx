@@ -3,6 +3,7 @@ import { post } from "../../lib/api";
 import { useHome } from "./ChildApp";
 import { Sheet, useToast } from "../../lib/ui";
 import { fmtDay, remainingDays } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 const TERMS = [
   { days: 7, name: "7天", tip: "短期存" },
@@ -86,7 +87,10 @@ export default function BankPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-black text-slate-800 mb-1">🏦 时间银行</h2>
+      <h2 className="text-xl font-black text-slate-800 mb-1 flex items-center gap-1.5">
+        <IfIcon name="bank" />
+        时间银行
+      </h2>
       <p className="text-sm text-slate-400 mb-4">钱包里的钱可以存定期吃利息，也可以放进存钱罐</p>
 
       {/* 钱包 */}
@@ -109,7 +113,10 @@ export default function BankPage() {
       </div>
 
       {/* 存钱罐 */}
-      <h3 className="font-extrabold text-slate-600 mb-2">🎯 我的存钱罐</h3>
+      <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+        <IfIcon name="moneybox" />
+        我的存钱罐
+      </h3>
       {activeGoals.length === 0 && achievedGoals.length === 0 ? (
         <div className="card text-center py-8 text-slate-400 mb-4">
           <div className="text-4xl mb-1">🫙</div>
@@ -163,11 +170,16 @@ export default function BankPage() {
       {/* 定期列表 */}
       {deposits.length > 0 && (
         <>
-          <h3 className="font-extrabold text-slate-600 mb-2">📦 定期存单</h3>
+          <h3 className="font-extrabold text-slate-600 mb-2 flex items-center gap-1.5">
+            <IfIcon name="hourglass" />
+            定期存单
+          </h3>
           <div className="card space-y-3 !py-3 mb-4">
             {deposits.map((d: any) => (
               <div key={d.id} className="flex items-center gap-3 text-sm">
-                <span className="text-xl">🏦</span>
+                <span className="text-xl">
+                  <IfIcon name="bank" />
+                </span>
                 <div className="flex-1">
                   <div className="font-bold">
                     {d.amount} 时币 · {d.term_days}天

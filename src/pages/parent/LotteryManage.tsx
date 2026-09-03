@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { get, post } from "../../lib/api";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { REWARD_ICONS } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 interface Prize {
   id?: string;
@@ -93,7 +94,10 @@ export default function LotteryManage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <h2 className="text-xl font-black text-slate-800">🎰 抽奖转盘</h2>
+        <h2 className="text-xl font-black text-slate-800 flex items-center gap-1.5">
+          <IfIcon name="wheeloffortune" />
+          抽奖转盘
+        </h2>
         <button
           className="btn btn-gold text-sm px-4 py-2"
           onClick={() => {
@@ -124,7 +128,10 @@ export default function LotteryManage() {
 
       {/* 机会来源 */}
       <div className="card space-y-4 mb-4">
-        <div className="font-extrabold text-slate-700">🎟️ 抽奖机会从哪来</div>
+        <div className="font-extrabold text-slate-700 flex items-center gap-1.5">
+          <IfIcon name="lotteryticket" />
+          抽奖机会从哪来
+        </div>
         <div>
           <label className="field-label">每天无条件免费次数</label>
           <input className="input text-xl font-black" type="number" inputMode="numeric" min={0}

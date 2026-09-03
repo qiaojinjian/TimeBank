@@ -4,6 +4,7 @@ import { useHome } from "./ChildApp";
 import { useToast } from "../../lib/ui";
 import { fmtDate } from "../../lib/format";
 import { StatusChip } from "./HomePage";
+import { IfIcon } from "../../lib/Icon";
 
 export default function TasksPage() {
   const { data, reload } = useHome();
@@ -31,7 +32,10 @@ export default function TasksPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-black text-slate-800 mb-1">📋 任务打卡</h2>
+      <h2 className="text-xl font-black text-slate-800 mb-1 flex items-center gap-1.5">
+        <IfIcon name="order" />
+        任务打卡
+      </h2>
       <p className="text-sm text-slate-400 mb-4">
         完成了就点一下，时币 <b className="coin">+</b> 起来！
       </p>

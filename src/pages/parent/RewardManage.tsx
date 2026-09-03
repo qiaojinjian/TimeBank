@@ -3,6 +3,7 @@ import { get, post } from "../../lib/api";
 import { Sheet, useToast, Empty } from "../../lib/ui";
 import { REWARD_ICONS } from "../../lib/format";
 import LotteryManage from "./LotteryManage";
+import { IfIcon } from "../../lib/Icon";
 
 type Tab = "rewards" | "lottery";
 
@@ -58,13 +59,13 @@ export default function RewardManage() {
           onClick={() => setTab("rewards")}
           className={`btn py-2.5 ${tab === "rewards" ? "btn-gold" : "btn-soft"}`}
         >
-          🎁 奖励商店
+          <IfIcon name="gift" /> 奖励商店
         </button>
         <button
           onClick={() => setTab("lottery")}
           className={`btn py-2.5 ${tab === "lottery" ? "btn-gold" : "btn-soft"}`}
         >
-          🎰 抽奖转盘
+          <IfIcon name="wheeloffortune" /> 抽奖转盘
         </button>
       </div>
 
@@ -73,7 +74,10 @@ export default function RewardManage() {
       ) : (
       <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-black text-slate-800">🎁 奖励商店管理</h2>
+        <h2 className="text-xl font-black text-slate-800 flex items-center gap-1.5">
+          <IfIcon name="gift" />
+          奖励商店管理
+        </h2>
         <button className="btn btn-gold text-sm px-4 py-2" onClick={() => { setForm({ title: "", icon: "🎁", price: 20 }); setOpen(true); }}>
           + 上架奖励
         </button>

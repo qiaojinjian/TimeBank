@@ -3,6 +3,7 @@ import { get, post } from "../../lib/api";
 import { useHome } from "./ChildApp";
 import { Sheet, useToast } from "../../lib/ui";
 import { fmtDate } from "../../lib/format";
+import { IfIcon } from "../../lib/Icon";
 
 interface Prize {
   id: string;
@@ -214,7 +215,10 @@ export default function LotteryPanel() {
         className="w-full mb-4 rounded-2xl p-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-200/70 text-left flex items-center justify-between"
       >
         <div>
-          <div className="font-black text-lg">🎰 抽奖转盘</div>
+          <div className="font-black text-lg flex items-center gap-1.5">
+            <IfIcon name="wheeloffortune" />
+            抽奖转盘
+          </div>
           <div className="text-violet-100 text-sm mt-0.5">
             {quota && quota.left > 0 ? `今天还能抽 ${quota.left} 次` : "今天的次数用完啦"}
             {pendingCount > 0 && ` · ${pendingCount} 个奖品待决定`}
@@ -296,7 +300,10 @@ export default function LotteryPanel() {
         {/* 我的奖品 */}
         {data.draws.length > 0 && (
           <div className="card !p-3">
-            <div className="font-extrabold text-sm text-slate-600 mb-2">🎁 我的奖品</div>
+            <div className="font-extrabold text-sm text-slate-600 mb-2 flex items-center gap-1.5">
+              <IfIcon name="gift" />
+              我的奖品
+            </div>
             {orderedDraws.slice(0, 10).map((d: any) => (
               <div key={d.id} className="py-2 border-b border-slate-50 last:border-0">
                 <div className="flex items-center gap-2">
