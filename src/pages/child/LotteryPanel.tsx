@@ -97,16 +97,18 @@ function PrizeWheel({
       <div
         className={`absolute -inset-1.5 rounded-full bg-gradient-to-br from-amber-300 to-violet-400 blur-[2px] ${won ? "glow-ring" : ""}`}
       />
-      <img
-        src="/wheel.png"
-        alt=""
-        draggable={false}
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{
-          transform: `rotate(${rot}deg)`,
-          transition: spinning && landOn ? `transform ${SETTLE_MS}ms cubic-bezier(0.12, 0.62, 0.03, 1)` : "none",
-        }}
-      />
+      <div className="absolute inset-0 rounded-full overflow-hidden bg-white shadow-[0_4px_18px_rgba(124,58,237,0.25)] ring-2 ring-white">
+        <img
+          src="/wheel.png"
+          alt=""
+          draggable={false}
+          className="w-full h-full object-cover"
+          style={{
+            transform: `rotate(${rot}deg)`,
+            transition: spinning && landOn ? `transform ${SETTLE_MS}ms cubic-bezier(0.12, 0.62, 0.03, 1)` : "none",
+          }}
+        />
+      </div>
       {/* 指针 */}
       <div
         className="absolute left-1/2 -top-1 -translate-x-1/2 w-0 h-0 z-10"
@@ -146,7 +148,22 @@ export default function LotteryPanel() {
     load();
   }, []);
 
-  if (!data || !data.enabled) return null;
+  // 先占位再填数据，避免卡片在接口返回后才插到最前面造成跳动
+  if (!data) {
+    return (
+      <div className="w-full mb-4 rounded-2xl p-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-200/70 flex items-center justify-between opacity-70">
+        <div>
+          <div className="font-black text-lg flex items-center gap-1.5">
+            <IfIcon name="wheeloffortune" />
+            抽奖转盘
+          </div>
+          <div className="text-violet-100 text-sm mt-0.5">加载中…</div>
+        </div>
+        <span className="bg-white/25 rounded-full px-4 py-2 text-sm font-bold">请稍等</span>
+      </div>
+    );
+  }
+  if (!data.enabled) return null;
   const quota = data.quota;
   const pendingCount = data.draws.filter((d: any) => d.status === "pending").length;
   const orderedDraws = [
