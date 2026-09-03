@@ -318,15 +318,22 @@ async function runMigrations(env: any): Promise<void> {
 }
 
 async function initSchema(env: any): Promise<void> {
+  // 首次部署时可能多个请求/多个 Worker 实例同时初始化，全部用幂等语句 + OR IGNORE，避免并发冲突
   for (const stmt of SCHEMA.split(";")) {
     const s = stmt.trim();
     if (!s) continue;
     await env.DB.prepare(s).run();
   }
-  await env.DB.prepare(`INSERT INTO meta(k,v) VALUES('schema','1')`).run();
+  await env.DB.prepare(`INSERT OR IGNORE INTO meta(k,v) VALUES('schema','1')`).run();
 }
 
 export async function ensureSchema(env: any): Promise<void> {
+  if (!env?.DB) {
+    throw new HttpError(
+      500,
+      "数据库没连接上：请到 Cloudflare Pages 项目的「设置 → 函数 → D1 数据库绑定」添加绑定，变量名必须填 DB，然后重新部署"
+    );
+  }
   let ready = false;
   try {
     const row = await env.DB.prepare(`SELECT v FROM meta WHERE k='schema'`).first();
