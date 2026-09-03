@@ -42,7 +42,7 @@ export const onRequestPost = async (context: any) => {
     const u: any = await env.DB.prepare(`SELECT balance FROM users WHERE id=?`).bind(user.id).first();
     return json({
       ok: true,
-      prize: { id: drawId, title: hit.title, icon: hit.icon, kind: hit.kind, coins: hit.coins, status },
+      prize: { id: drawId, prizeId: hit.id, title: hit.title, icon: hit.icon, kind: hit.kind, coins: hit.coins, status },
       balance: u.balance,
       quota: await lotteryQuota(env, user.id, cfg),
     });

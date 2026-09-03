@@ -167,13 +167,22 @@ button {
 }
 
 /* 抽奖转盘 */
-@keyframes spin-fast {
-  from { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(360deg) scale(1.15); }
-  to { transform: rotate(720deg) scale(1); }
+@keyframes prize-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.14); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
-.spin-fast {
-  animation: spin-fast 0.9s ease-in-out;
+.prize-pop {
+  animation: prize-pop 0.5s cubic-bezier(0.2, 1.25, 0.35, 1);
+}
+
+/* 中奖时从转盘外圈扩散一圈光 */
+@keyframes glow-ring {
+  0% { box-shadow: 0 0 0 0 rgb(245 158 11 / 0.55); }
+  100% { box-shadow: 0 0 0 24px rgb(245 158 11 / 0); }
+}
+.glow-ring {
+  animation: glow-ring 1.1s ease-out;
 }
 
 /* toast */
